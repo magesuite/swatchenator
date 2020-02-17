@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Swatches\Block\Product\Renderer\Configurable">
+        <plugin name="add_out_of_stock_options_to_swatches" type="MageSuite\Swatchenator\Plugin\Swatches\Block\Product\Renderer\Configurable\AddOutOfStockOptionsToSwatches" sortOrder="10" />
+    </type>
+</config>
