@@ -26,13 +26,15 @@ class JsonConfigModifier
         }
 
         foreach ($jsonConfig['attributes'] as $attributeId => $attributeData) {
+            $sortOrder = $this->prepareSortOrder($productResource, $attributeId, $allAttributesOptions);
+
             foreach ($attributeData['options'] as $option) {
                 if (isset($allAttributesOptions[$attributeId][$option['id']])) {
                     unset($allAttributesOptions[$attributeId][$option['id']]);
                 }
             }
 
-            $options = $this->updateJsonConfigOptions($productResource->getAttribute($attributeId), $attributeData['options'], $allAttributesOptions[$attributeId]);
+            $options = $this->updateJsonConfigOptions($productResource->getAttribute($attributeId), $attributeData['options'], $allAttributesOptions[$attributeId], $sortOrder);
 
             $jsonConfig['attributes'][$attributeId]['options'] = $options;
         }
@@ -86,8 +88,11 @@ class JsonConfigModifier
         return $options;
     }
 
-    protected function updateJsonConfigOptions($attribute, $attributeOptions, $optionsToUpdate)
+    protected function updateJsonConfigOptions($attribute, $attributeOptions, $optionsToUpdate, $sortOrder = [])
     {
+        if (empty($optionsToUpdate)) {
+            return $attributeOptions;
+        }
         foreach ($optionsToUpdate as $id => $optionToUpdate) {
             $attributeOptions[] = [
                 'id' => (string) $id,
@@ -95,12 +100,10 @@ class JsonConfigModifier
                 'products' => []
             ];
         }
-
-        usort($attributeOptions, function ($a, $b) {
-            return $a['label'] <=> $b['label'];
+        uasort($attributeOptions, function ($a, $b) use ($sortOrder) {
+            return array_search(intval($a['id']), $sortOrder) <=> array_search(intval($b['id']), $sortOrder);
         });
-
-        return $attributeOptions;
+        return array_values($attributeOptions);
     }
 
     protected function updateJsonSwatchConfigOptions($attribute, $attributeOptions, $optionsToUpdate)
@@ -115,5 +118,15 @@ class JsonConfigModifier
         }
 
         return $attributeOptions;
+    }
+
+    protected function prepareSortOrder(\Magento\Catalog\Model\ResourceModel\Product $productResource, $attributeId, $allAttributesOptions)
+    {
+        $resourceAttributeOptions = $productResource->getAttribute($attributeId)->getOptions();
+        $attributeOptions = $allAttributesOptions[$attributeId] ?? [];
+        $filteredOptions = array_map(function ($option) use ($attributeOptions) {
+            return isset($attributeOptions[$option->getValue()]) ? intval($option->getValue()) : false;
+        }, $resourceAttributeOptions);
+        return array_filter($filteredOptions);
     }
 }
