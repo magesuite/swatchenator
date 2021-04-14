@@ -78,6 +78,7 @@ class JsonConfigModifier
 
         $collection
             ->addFilterByRequiredOptions()
+            ->addAttributeToFilter(\Magento\Catalog\Api\Data\ProductInterface::STATUS, ['eq' => \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED])
             ->setStoreId($product->getStoreId());
 
         $collection->addMediaGalleryData();
