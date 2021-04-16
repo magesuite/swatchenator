@@ -33,7 +33,7 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
      * @magentoDataFixture Magento/ConfigurableProduct/_files/product_configurable.php
-     * @magentoDataFixture modifySimpleProducts
+     * @magentoDataFixture modifySimpleProductStockAvailability
      */
     public function testItAddOutOfStockOptionsToSwatchesConfig()
     {
@@ -45,9 +45,8 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
 
         $attributeData = array_shift($jsonConfig['attributes']);
 
-        $firstOption = array_shift($attributeData['options']);
-
-        $this->assertEmpty($firstOption['products']);
+        $this->assertEmpty($attributeData['options'][0]['products']);
+        $this->assertNotEmpty($attributeData['options'][1]['products']);
     }
 
     /**
@@ -56,8 +55,8 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
      * @magentoDataFixture Magento/ConfigurableProduct/_files/product_configurable.php
-     * @magentoDataFixture modifyAttributes
-     * @magentoDataFixture modifySimpleProducts
+     * @magentoDataFixture modifyAttributeOptionSortOrder
+     * @magentoDataFixture modifySimpleProductStockAvailability
      */
     public function testSwatchesOrderIsCorrect()
     {
@@ -73,17 +72,48 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('Option 1', $attributeData['options'][1]['label']);
     }
 
-    public static function modifySimpleProducts()
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
+     * @magentoDataFixture Magento/ConfigurableProduct/_files/product_configurable.php
+     * @magentoDataFixture disableOneSimpleProduct
+     */
+    public function testItNotIncludeDisabledProduct()
     {
-        require __DIR__ . '/../../../../../../../_files/products.php';
+        $product = $this->productRepository->get('configurable');
+        $swatchRenderer = $this->swatchRenderer->setProduct($product);
+
+        $jsonConfig = $swatchRenderer->getJsonConfig();
+        $jsonConfig = json_decode($jsonConfig, true);
+
+        $attributeData = array_shift($jsonConfig['attributes']);
+
+        $this->assertNotEmpty($attributeData['options'][0]['products']);
+        $this->assertEmpty($attributeData['options'][1]['products']);
+    }
+
+    public static function modifySimpleProductStockAvailability()
+    {
+        require __DIR__ . '/../../../../../../../_files/modify_product_stock_availability.php';
 
         $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
         $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
     }
 
-    public static function modifyAttributes()
+    public static function disableOneSimpleProduct()
     {
-        require __DIR__ . '/../../../../../../../_files/attributes.php';
+        require __DIR__ . '/../../../../../../../_files/disable_one_simple_product.php';
+
+        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
+        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
+    }
+
+    public static function modifyAttributeOptionSortOrder()
+    {
+        require __DIR__ . '/../../../../../../../_files/modify_attribute_option_sort_order.php';
     }
 }
