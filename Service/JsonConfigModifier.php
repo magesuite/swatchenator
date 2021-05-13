@@ -8,10 +8,18 @@ class JsonConfigModifier
      * @var \Magento\ConfigurableProduct\Helper\Data
      */
     protected $helper;
+    /**
+     * @var \Magento\Swatches\Helper\Data
+     */
+    protected $swatchHelper;
 
-    public function __construct(\Magento\ConfigurableProduct\Helper\Data $helper)
+    public function __construct(
+        \Magento\ConfigurableProduct\Helper\Data $helper,
+        \Magento\Swatches\Helper\Data $swatchHelper
+    )
     {
         $this->helper = $helper;
+        $this->swatchHelper = $swatchHelper;
     }
 
     public function addOutOfStockProductsToJsonConfig($product, $jsonConfig)
@@ -47,6 +55,7 @@ class JsonConfigModifier
         $productResource = $product->getResource();
 
         $allAttributesOptions = $this->getAllAttributesOptions($product);
+        $swatchesData = $this->swatchHelper->getSwatchesByOptionsId($allAttributesOptions);
 
         $jsonSwatchesConfig = json_decode($jsonSwatchesConfig, true);
 
@@ -62,7 +71,7 @@ class JsonConfigModifier
                 }
 
             }
-            $options = $this->updateJsonSwatchConfigOptions($productResource->getAttribute($attributeId), $jsonSwatchesConfig[$attributeId], $optionsToUpdate);
+            $options = $this->updateJsonSwatchConfigOptions($productResource->getAttribute($attributeId), $jsonSwatchesConfig[$attributeId], $optionsToUpdate, $swatchesData);
 
             $jsonSwatchesConfig[$attributeId] = $options;
         }
@@ -107,13 +116,13 @@ class JsonConfigModifier
         return array_values($attributeOptions);
     }
 
-    protected function updateJsonSwatchConfigOptions($attribute, $attributeOptions, $optionsToUpdate)
+    protected function updateJsonSwatchConfigOptions($attribute, $attributeOptions, $optionsToUpdate, $swatchesData)
     {
         foreach ($optionsToUpdate as $id) {
             $attributeValue = $attribute->getSource()->getOptionText($id);
             $attributeOptions[$id] = [
-                'type' => (string) 0,
-                'value' => $attributeValue,
+                'type' => $swatchesData[$id]['type'],
+                'value' => $swatchesData[$id]['value'],
                 'label' => $attributeValue
             ];
         }
