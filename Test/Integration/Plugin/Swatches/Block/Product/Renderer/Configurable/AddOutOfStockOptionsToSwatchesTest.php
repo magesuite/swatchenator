@@ -94,6 +94,30 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
         $this->assertEmpty($attributeData['options'][1]['products']);
     }
 
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
+     * @magentoDataFixture modifySimpleProductStockAvailabilityWithSwatchImage
+     */
+    public function testItReturnCorrectConfigurationForImageSwatch()
+    {
+        $product = $this->productRepository->get('configurable_12345');
+        $swatchRenderer = $this->swatchRenderer->setProduct($product);
+
+        $jsonSwatchConfig = $swatchRenderer->getJsonSwatchConfig();
+        $jsonSwatchConfig = json_decode($jsonSwatchConfig, true);
+
+        $optionsData = array_shift($jsonSwatchConfig);
+
+        $outOfStockOption = end($optionsData);
+        $this->assertEquals(\Magento\Swatches\Model\Swatch::SWATCH_TYPE_VISUAL_IMAGE, $outOfStockOption['type']);
+        $this->assertEquals('http://localhost/pub/media/attribute/swatch/swatch_image/30x20/visual_swatch_attribute_option_type_image.jpg', $outOfStockOption['value']);
+        $this->assertEquals('http://localhost/pub/media/attribute/swatch/swatch_thumb/110x90/visual_swatch_attribute_option_type_image.jpg', $outOfStockOption['thumb']);
+        $this->assertEquals('option 2', $outOfStockOption['label']);
+    }
+
     public static function modifySimpleProductStockAvailability()
     {
         require __DIR__ . '/../../../../../../../_files/modify_product_stock_availability.php';
@@ -115,5 +139,14 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
     public static function modifyAttributeOptionSortOrder()
     {
         require __DIR__ . '/../../../../../../../_files/modify_attribute_option_sort_order.php';
+    }
+
+    public static function modifySimpleProductStockAvailabilityWithSwatchImage()
+    {
+        require __DIR__ . '/../../../../../../../_files/modify_product_stock_availability_with_swatch_image.php';
+
+        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
+        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
     }
 }
