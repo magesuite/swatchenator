@@ -237,10 +237,10 @@ class JsonConfigModifier
 
     public function getSwatchProductImage(\Magento\Catalog\Model\Product $childProduct, $imageType)
     {
-        if ($this->isProductHasImage($childProduct, \Magento\Swatches\Model\Swatch::SWATCH_IMAGE_NAME)) {
+        if ($this->productHasImage($childProduct, \Magento\Swatches\Model\Swatch::SWATCH_IMAGE_NAME)) {
             $swatchImageId = $imageType;
             $imageAttributes = ['type' => \Magento\Swatches\Model\Swatch::SWATCH_IMAGE_NAME];
-        } elseif ($this->isProductHasImage($childProduct, 'image')) {
+        } elseif ($this->productHasImage($childProduct, 'image')) {
             $swatchImageId = $imageType == \Magento\Swatches\Model\Swatch::SWATCH_IMAGE_NAME ? 'swatch_image_base' : 'swatch_thumb_base';
             $imageAttributes = ['type' => 'image'];
         }
@@ -250,7 +250,7 @@ class JsonConfigModifier
         }
     }
 
-    public function isProductHasImage(\Magento\Catalog\Model\Product $product, $imageType)
+    public function productHasImage(\Magento\Catalog\Model\Product $product, $imageType)
     {
         return $product->getData($imageType) !== null && $product->getData($imageType) != \Magento\Swatches\Helper\Data::EMPTY_IMAGE_VALUE;
     }
