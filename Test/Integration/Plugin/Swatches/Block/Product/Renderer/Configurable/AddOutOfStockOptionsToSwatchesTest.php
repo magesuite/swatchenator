@@ -99,6 +99,9 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
+     * @magentoDataFixture addVisualSwatchAttributeWithDifferentOptionsType
+     * @magentoDataFixture addConfigurableProductWithSwatchOptionsAttribute
+     * @magentoDataFixture addConfigurableProductWithSwatchOptions
      * @magentoDataFixture modifySimpleProductStockAvailabilityWithSwatchImage
      */
     public function testItReturnCorrectConfigurationForImageSwatch()
@@ -113,8 +116,8 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
 
         $outOfStockOption = end($optionsData);
         $this->assertEquals(\Magento\Swatches\Model\Swatch::SWATCH_TYPE_VISUAL_IMAGE, $outOfStockOption['type']);
-        $this->assertEquals('http://localhost/pub/media/attribute/swatch/swatch_image/30x20/visual_swatch_attribute_option_type_image.jpg', $outOfStockOption['value']);
-        $this->assertEquals('http://localhost/pub/media/attribute/swatch/swatch_thumb/110x90/visual_swatch_attribute_option_type_image.jpg', $outOfStockOption['thumb']);
+        $this->assertEquals('http://localhost/media/attribute/swatch/swatch_image/30x20/visual_swatch_attribute_option_type_image.jpg', str_replace('pub/', '', $outOfStockOption['value']));
+        $this->assertEquals('http://localhost/media/attribute/swatch/swatch_thumb/110x90/visual_swatch_attribute_option_type_image.jpg', str_replace('pub/', '', $outOfStockOption['thumb']));
         $this->assertEquals('option 2', $outOfStockOption['label']);
     }
 
@@ -144,6 +147,33 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
     public static function modifySimpleProductStockAvailabilityWithSwatchImage()
     {
         require __DIR__ . '/../../../../../../../_files/modify_product_stock_availability_with_swatch_image.php';
+
+        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
+        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
+    }
+
+    public static function addConfigurableProductWithSwatchOptions()
+    {
+        require __DIR__ . '/../../../../../../../_files/configurable_products.php';
+
+        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
+        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
+    }
+
+    public static function addConfigurableProductWithSwatchOptionsAttribute()
+    {
+        require __DIR__ . '/../../../../../../../_files/configurable_attribute.php';
+
+        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
+        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
+    }
+
+    public static function addVisualSwatchAttributeWithDifferentOptionsType()
+    {
+        require __DIR__ . '/../../../../../../../_files/visual_swatch_attribute_with_different_options_type.php';
 
         $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
