@@ -19,6 +19,12 @@ $installer = Bootstrap::getObjectManager()->create(\Magento\Catalog\Setup\Catego
 /** @var AttributeRepositoryInterface $attributeRepository */
 $attributeRepository = Bootstrap::getObjectManager()->create(AttributeRepositoryInterface::class);
 
+$eavConfig = Bootstrap::getObjectManager()->get(\Magento\Eav\Model\Config::class);
+$attribute = $eavConfig->getAttribute('catalog_product', 'test_configurable');
+
+if ($attribute->getId()) {
+    $attributeRepository->deleteById($attribute->getId());
+}
 // Generate swatch image
 /** @var ImagesGenerator $imagesGenerator */
 $imagesGenerator = Bootstrap::getObjectManager()->get(ImagesGenerator::class);

@@ -158,3 +158,6 @@ $product->setTypeId(Configurable::TYPE_CODE)
     ->setStockData(['use_config_manage_stock' => 1, 'is_in_stock' => 1]);
 $productRepository->cleanCache();
 $productRepository->save($product);
+
+$product->reindex();
+$product->priceReindexCallback();
