@@ -100,7 +100,6 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
      * @magentoDataFixture addVisualSwatchAttributeWithDifferentOptionsType
-     * @magentoDataFixture addConfigurableProductWithSwatchOptionsAttribute
      * @magentoDataFixture addConfigurableProductWithSwatchOptions
      * @magentoDataFixture modifySimpleProductStockAvailabilityWithSwatchImage
      */
@@ -156,15 +155,6 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
     public static function addConfigurableProductWithSwatchOptions()
     {
         require __DIR__ . '/../../../../../../../_files/configurable_products.php';
-
-        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
-        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
-    }
-
-    public static function addConfigurableProductWithSwatchOptionsAttribute()
-    {
-        require __DIR__ . '/../../../../../../../_files/configurable_attribute.php';
 
         $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
