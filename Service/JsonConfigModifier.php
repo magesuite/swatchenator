@@ -4,6 +4,8 @@ namespace MageSuite\Swatchenator\Service;
 
 class JsonConfigModifier
 {
+    protected $configurableProduct = null;
+
     protected $simpleProductsCollection = null;
 
     /**
@@ -97,7 +99,7 @@ class JsonConfigModifier
 
     public function getAllAttributesProducts($product)
     {
-        if (!$this->simpleProductsCollection) {
+        if ($this->shouldSimpleProductCollectionBeReloaded($product)) {
             $collection = $product->getTypeInstance()->getUsedProductCollection($product);
 
             $collection->setFlag('has_stock_status_filter', true);
@@ -110,6 +112,7 @@ class JsonConfigModifier
             $collection->addMediaGalleryData();
             $collection->addTierPriceData();
 
+            $this->configurableProduct = $product;
             $this->simpleProductsCollection = $collection;
         }
 
@@ -253,5 +256,18 @@ class JsonConfigModifier
     public function productHasImage(\Magento\Catalog\Model\Product $product, $imageType)
     {
         return $product->getData($imageType) !== null && $product->getData($imageType) != \Magento\Swatches\Helper\Data::EMPTY_IMAGE_VALUE;
+    }
+
+    protected function shouldSimpleProductCollectionBeReloaded(\Magento\Catalog\Model\Product $product)
+    {
+        if (!$this->simpleProductsCollection || !$this->configurableProduct) {
+            return true;
+        }
+
+        if ($this->configurableProduct->getId() != $product->getId()) {
+            return true;
+        }
+
+        return false;
     }
 }
