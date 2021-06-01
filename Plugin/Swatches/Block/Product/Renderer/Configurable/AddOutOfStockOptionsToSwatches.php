@@ -8,6 +8,7 @@ class AddOutOfStockOptionsToSwatches
      * @var \MageSuite\Swatchenator\Helper\Configuration
      */
     protected $configuration;
+
     /**
      * @var \MageSuite\Swatchenator\Service\JsonConfigModifier
      */
