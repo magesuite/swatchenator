@@ -3,4 +3,12 @@
     <type name="Magento\Swatches\Block\Product\Renderer\Configurable">
         <plugin name="add_out_of_stock_options_to_swatches" type="MageSuite\Swatchenator\Plugin\Swatches\Block\Product\Renderer\Configurable\AddOutOfStockOptionsToSwatches" sortOrder="10" />
     </type>
+
+    <type name="Magento\ConfigurableProduct\Model\Product\Type\Configurable">
+        <plugin name="mark_configurable_as_saleable" type="MageSuite\Swatchenator\Plugin\ConfigurableProduct\Model\Product\Type\Configurable\MarkConfigurableAsSaleable" sortOrder="10" />
+    </type>
+
+    <type name="Magento\InventoryConfigurableProduct\Plugin\Model\ResourceModel\Attribute\IsSalableOptionSelectBuilder">
+        <plugin name="do_not_add_salable_filter_to_configurable" type="MageSuite\Swatchenator\Plugin\InventoryConfigurableProduct\Plugin\Model\ResourceModel\Attribute\IsSalableOptionSelectBuilder\DoNotAddSalableFilterToConfigurable" sortOrder="10" />
+    </type>
 </config>
