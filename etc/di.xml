@@ -9,6 +9,10 @@
     </type>
 
     <type name="Magento\InventoryConfigurableProduct\Plugin\Model\ResourceModel\Attribute\IsSalableOptionSelectBuilder">
-        <plugin name="do_not_add_salable_filter_to_configurable" type="MageSuite\Swatchenator\Plugin\InventoryConfigurableProduct\Plugin\Model\ResourceModel\Attribute\IsSalableOptionSelectBuilder\DoNotAddSalableFilterToConfigurable" sortOrder="10" />
+        <plugin name="do_not_add_salable_filter_to_configurable_resource" type="MageSuite\Swatchenator\Plugin\InventoryConfigurableProduct\Plugin\Model\ResourceModel\Attribute\IsSalableOptionSelectBuilder\DoNotAddSalableFilterToConfigurable" sortOrder="10" />
+    </type>
+
+    <type name="Magento\InventoryConfigurableProduct\Pricing\Price\LowestPriceOptionsProvider\StockStatusBaseSelectProcessor">
+        <plugin name="do_not_add_salable_filter_to_configurable_pricing" type="MageSuite\Swatchenator\Plugin\InventoryConfigurableProduct\Pricing\Price\LowestPriceOptionsProvider\StockStatusBaseSelectProcessor\DoNotAddSalableFilterToConfigurable" sortOrder="10" />
     </type>
 </config>
