@@ -154,7 +154,9 @@ class JsonConfigModifier
                 'label' => $attributeValue
             ];
 
-            if ($swatchesData[$id]['type'] == \Magento\Swatches\Model\Swatch::SWATCH_TYPE_VISUAL_IMAGE) {
+            if ($swatchesData[$id]['type'] == \Magento\Swatches\Model\Swatch::SWATCH_TYPE_VISUAL_IMAGE ||
+                $attribute->getUseProductImageForSwatch()
+            ) {
                 $attributeOptions[$id] = $this->extractNecessarySwatchData($attributeOptions[$id]);
                 $attributeOptions[$id] = $this->addAdditionalMediaData($product, $attributeOptions[$id], $id, $attribute->getData());
                 $attributeOptions[$id]['label'] = $attributeValue;
