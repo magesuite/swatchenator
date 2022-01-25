@@ -161,4 +161,9 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
     {
         require __DIR__ . '/../../../../../../../_files/visual_swatch_attribute_with_different_options_type.php';
     }
+
+    public static function addVisualSwatchAttributeWithDifferentOptionsTypeRollback()
+    {
+        require __DIR__ . '/../../../../../../../_files/visual_swatch_attribute_with_different_options_type_rollback.php';
+    }
 }
