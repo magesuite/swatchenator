@@ -121,7 +121,19 @@ class JsonConfigModifier
 
     public function getAllAttributesOptions($product, $simpleProductsCollection)
     {
-        $options = $this->helper->getOptions($product, $simpleProductsCollection);
+        $options = [];
+        $allowAttributes = $this->helper->getAllowAttributes($product);
+
+        foreach ($simpleProductsCollection as $simpleProduct) {
+            $productId = $simpleProduct->getId();
+            foreach ($allowAttributes as $attribute) {
+                $productAttribute = $attribute->getProductAttribute();
+                $productAttributeId = $productAttribute->getId();
+                $attributeValue = $simpleProduct->getData($productAttribute->getAttributeCode());
+                $options[$productAttributeId][$attributeValue][] = $productId;
+                $options['index'][$productId][$productAttributeId] = $attributeValue;
+            }
+        }
 
         return $options;
     }
