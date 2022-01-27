@@ -138,7 +138,7 @@ class JsonConfigModifier
         return $options;
     }
 
-    public function updateJsonConfigOptions($attribute, $attributeOptions, $optionsToUpdate, $sortOrder = [])
+    public function updateJsonConfigOptions($attribute, $attributeOptions, $optionsToUpdate, $sortOrder = []) // @codingStandardsIgnoreLine
     {
         if (empty($optionsToUpdate)) {
             return $attributeOptions;
@@ -150,13 +150,11 @@ class JsonConfigModifier
                 'products' => []
             ];
         }
-        uasort($attributeOptions, function ($a, $b) use ($sortOrder) {
-            return array_search(intval($a['id']), $sortOrder) <=> array_search(intval($b['id']), $sortOrder);
-        });
+        uasort($attributeOptions, $this->uaSort($sortOrder));
         return array_values($attributeOptions);
     }
 
-    public function updateJsonSwatchConfigOptions($product, $attribute, $attributeOptions, $optionsToUpdate, $swatchesData)
+    public function updateJsonSwatchConfigOptions($product, $attribute, $attributeOptions, $optionsToUpdate, $swatchesData) // @codingStandardsIgnoreLine
     {
         foreach ($optionsToUpdate as $id) {
             $attributeValue = $attribute->getSource()->getOptionText($id);
@@ -182,13 +180,12 @@ class JsonConfigModifier
     {
         $resourceAttributeOptions = $productResource->getAttribute($attributeId)->getOptions();
         $attributeOptions = $allAttributesOptions[$attributeId] ?? [];
-        $filteredOptions = array_map(function ($option) use ($attributeOptions) {
-            return isset($attributeOptions[$option->getValue()]) ? intval($option->getValue()) : false;
-        }, $resourceAttributeOptions);
+        $filteredOptions = array_map($this->getOptionValue($attributeOptions), $resourceAttributeOptions);
+
         return array_filter($filteredOptions);
     }
 
-    public function addAdditionalMediaData($product, array $swatch, $optionId, array $attributeDataArray)
+    public function addAdditionalMediaData($product, array $swatch, $optionId, array $attributeDataArray)  // @codingStandardsIgnoreLine
     {
         if (isset($attributeDataArray['use_product_image_for_swatch'])
             && $attributeDataArray['use_product_image_for_swatch']
@@ -283,5 +280,27 @@ class JsonConfigModifier
         }
 
         return false;
+    }
+
+    /**
+     * @param $sortOrder
+     * @return \Closure
+     */
+    protected function uaSort($sortOrder): \Closure
+    {
+        return function ($leftItem, $rightItem) use ($sortOrder) { // @codingStandardsIgnoreLine
+            return array_search((int)$leftItem['id'], $sortOrder) <=> array_search((int)$rightItem['id'], $sortOrder);
+        };
+    }
+
+    /**
+     * @param $attributeOptions
+     * @return \Closure
+     */
+    protected function getOptionValue($attributeOptions): \Closure
+    {
+        return function ($option) use ($attributeOptions) { // @codingStandardsIgnoreLine
+            return isset($attributeOptions[$option->getValue()]) ? (int)$option->getValue() : false;
+        };
     }
 }

@@ -14,8 +14,12 @@ class DoNotAddSalableFilterToConfigurable
         $this->configuration = $configuration;
     }
 
-    public function aroundAfterGetSelect(\Magento\InventoryConfigurableProduct\Plugin\Model\ResourceModel\Attribute\IsSalableOptionSelectBuilder $plugin, callable $proceed, \Magento\ConfigurableProduct\Model\ResourceModel\Attribute\OptionSelectBuilderInterface $subject, \Magento\Framework\DB\Select $select)
-    {
+    public function aroundAfterGetSelect(
+        \Magento\InventoryConfigurableProduct\Plugin\Model\ResourceModel\Attribute\IsSalableOptionSelectBuilder $plugin,
+        callable $proceed,
+        \Magento\ConfigurableProduct\Model\ResourceModel\Attribute\OptionSelectBuilderInterface $subject,
+        \Magento\Framework\DB\Select $select
+    ) {
         if ($this->configuration->isModuleEnabled()) {
             return $select;
         }

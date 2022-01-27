@@ -1,26 +1,15 @@
 <?php
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Attribute\Source\Status;
-use Magento\Catalog\Model\Product\Type;
-use Magento\Catalog\Model\Product\Visibility;
-use Magento\Catalog\Setup\CategorySetup;
-use Magento\ConfigurableProduct\Helper\Product\Options\Factory;
-use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
-use Magento\Eav\Api\Data\AttributeOptionInterface;
-use Magento\Eav\Model\Config;
-use Magento\TestFramework\Helper\Bootstrap;
 
-$objectManager = Bootstrap::getObjectManager();
-/** @var ProductRepositoryInterface $productRepository */
+$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+/** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
 $productRepository = $objectManager
-    ->get(ProductRepositoryInterface::class);
+    ->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
 /** @var Config $eavConfig */
-$eavConfig = $objectManager->get(Config::class);
-$attribute = $eavConfig->getAttribute(Product::ENTITY, 'test_configurable');
+$eavConfig = $objectManager->get(\Magento\Eav\Model\Config::class);
+$attribute = $eavConfig->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'test_configurable');
 
 /** @var $installer CategorySetup */
-$installer = $objectManager->create(CategorySetup::class);
+$installer = $objectManager->create(\Magento\Catalog\Setup\CategorySetup::class);
 
 /* Create simple products per each option value*/
 /** @var AttributeOptionInterface[] $options */
@@ -35,9 +24,9 @@ $options = array_slice($options, 0, 2);
 
 foreach ($options as $option) {
     /** @var $product Product */
-    $product = $objectManager->create(Product::class);
+    $product = $objectManager->create(\Magento\Catalog\Model\Product::class);
     $productId = array_shift($productIds);
-    $product->setTypeId(Type::TYPE_SIMPLE)
+    $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
         ->setId($productId)
         ->setAttributeSetId($attributeSetId)
         ->setWebsiteIds([1])
@@ -45,8 +34,8 @@ foreach ($options as $option) {
         ->setSku('simple_' . $productId)
         ->setPrice($productId)
         ->setTestConfigurable($option->getValue())
-        ->setVisibility(Visibility::VISIBILITY_NOT_VISIBLE)
-        ->setStatus(Status::STATUS_ENABLED)
+        ->setVisibility(\Magento\Catalog\Model\Product\Visibility::VISIBILITY_NOT_VISIBLE)
+        ->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
         ->setStockData(['use_config_manage_stock' => 1, 'qty' => 100, 'is_qty_decimal' => 0, 'is_in_stock' => 1]);
     $product = $productRepository->save($product);
 
@@ -59,9 +48,9 @@ foreach ($options as $option) {
 }
 
 /** @var $product Product */
-$product = $objectManager->create(Product::class);
+$product = $objectManager->create(\Magento\Catalog\Model\Product::class);
 /** @var Factory $optionsFactory */
-$optionsFactory = $objectManager->create(Factory::class);
+$optionsFactory = $objectManager->create(\Magento\ConfigurableProduct\Helper\Product\Options\Factory::class);
 $configurableAttributesData = [
     [
         'attribute_id' => $attribute->getId(),
@@ -77,14 +66,14 @@ $extensionConfigurableAttributes->setConfigurableProductOptions($configurableOpt
 $extensionConfigurableAttributes->setConfigurableProductLinks($associatedProductIds);
 $product->setExtensionAttributes($extensionConfigurableAttributes);
 
-$product->setTypeId(Configurable::TYPE_CODE)
+$product->setTypeId(\Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE)
     ->setId(1)
     ->setAttributeSetId($attributeSetId)
     ->setWebsiteIds([1])
     ->setName('Configurable Product')
     ->setSku('configurable')
-    ->setVisibility(Visibility::VISIBILITY_BOTH)
-    ->setStatus(Status::STATUS_ENABLED)
+    ->setVisibility(\Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH)
+    ->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
     ->setStockData(['use_config_manage_stock' => 1, 'is_in_stock' => 1]);
 $productRepository->cleanCache();
 $productRepository->save($product);
@@ -101,9 +90,9 @@ array_shift($options); //remove the first option which is empty
 
 foreach ($options as $option) {
     /** @var $product Product */
-    $product = $objectManager->create(Product::class);
+    $product = $objectManager->create(\Magento\Catalog\Model\Product::class);
     $productId = array_shift($productIds);
-    $product->setTypeId(Type::TYPE_SIMPLE)
+    $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
         ->setId($productId)
         ->setAttributeSetId($attributeSetId)
         ->setWebsiteIds([1])
@@ -111,8 +100,8 @@ foreach ($options as $option) {
         ->setSku('simple_' . $productId)
         ->setPrice($productId)
         ->setTestConfigurable($option->getValue())
-        ->setVisibility(Visibility::VISIBILITY_NOT_VISIBLE)
-        ->setStatus(Status::STATUS_ENABLED)
+        ->setVisibility(\Magento\Catalog\Model\Product\Visibility::VISIBILITY_NOT_VISIBLE)
+        ->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
         ->setStockData(['use_config_manage_stock' => 1, 'qty' => 100, 'is_qty_decimal' => 0, 'is_in_stock' => 1]);
     $product = $productRepository->save($product);
 
@@ -125,10 +114,10 @@ foreach ($options as $option) {
 }
 
 /** @var $product Product */
-$product = $objectManager->create(Product::class);
+$product = $objectManager->create(\Magento\Catalog\Model\Product::class);
 
 /** @var Factory $optionsFactory */
-$optionsFactory = $objectManager->create(Factory::class);
+$optionsFactory = $objectManager->create(\Magento\ConfigurableProduct\Helper\Product\Options\Factory::class);
 
 $configurableAttributesData = [
     [
@@ -148,14 +137,14 @@ $extensionConfigurableAttributes->setConfigurableProductLinks($associatedProduct
 
 $product->setExtensionAttributes($extensionConfigurableAttributes);
 
-$product->setTypeId(Configurable::TYPE_CODE)
+$product->setTypeId(\Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE)
     ->setId(11)
     ->setAttributeSetId($attributeSetId)
     ->setWebsiteIds([1])
     ->setName('Configurable Product 12345')
     ->setSku('configurable_12345')
-    ->setVisibility(Visibility::VISIBILITY_BOTH)
-    ->setStatus(Status::STATUS_ENABLED)
+    ->setVisibility(\Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH)
+    ->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
     ->setStockData(['use_config_manage_stock' => 1, 'is_in_stock' => 1]);
 $productRepository->cleanCache();
 $productRepository->save($product);
