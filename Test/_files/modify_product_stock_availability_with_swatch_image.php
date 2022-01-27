@@ -11,7 +11,15 @@ $productRepository = $objectManager->create(\Magento\Catalog\Api\ProductReposito
 
 $product = $productRepository->get('simple_40');
 
-$product->setStockData(['use_config_manage_stock' => 1, 'qty' => 0, 'is_qty_decimal' => 0, 'is_in_stock' => 0]);
+$product->setStockData(
+    [
+        'use_config_manage_stock' => 0,
+        'manage_stock' => 0,
+        'qty' => 0,
+        'is_qty_decimal' => 0,
+        'is_in_stock' => 0,
+    ]
+);
 
 $productRepository->save($product);
 

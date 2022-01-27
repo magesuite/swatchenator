@@ -113,11 +113,32 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
 
         $optionsData = array_shift($jsonSwatchConfig);
 
-        $outOfStockOption = end($optionsData);
+        $outOfStockOption = $this->getOption($optionsData, 'option 2');
+
         $this->assertEquals(\Magento\Swatches\Model\Swatch::SWATCH_TYPE_VISUAL_IMAGE, $outOfStockOption['type']);
         $this->assertEquals('http://localhost/media/attribute/swatch/swatch_image/30x20/visual_swatch_attribute_option_type_image.jpg', str_replace('pub/', '', $outOfStockOption['value']));
         $this->assertEquals('http://localhost/media/attribute/swatch/swatch_thumb/110x90/visual_swatch_attribute_option_type_image.jpg', str_replace('pub/', '', $outOfStockOption['thumb']));
         $this->assertEquals('option 2', $outOfStockOption['label']);
+    }
+
+    /**
+     * @param array $optionsData
+     * @return array
+     */
+    protected function getOption(array $optionsData, string $label): array
+    {
+        foreach ($optionsData as $option) {
+            if ($option['label'] == $label) {
+                return $option;
+            }
+        }
+
+        return [
+            'type' => null,
+            'value' => null,
+            'thumb' => null,
+            'label' => null,
+        ];
     }
 
     public static function modifySimpleProductStockAvailability()

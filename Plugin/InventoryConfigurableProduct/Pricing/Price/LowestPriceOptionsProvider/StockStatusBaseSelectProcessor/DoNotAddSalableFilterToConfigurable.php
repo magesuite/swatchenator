@@ -14,8 +14,11 @@ class DoNotAddSalableFilterToConfigurable
         $this->configuration = $configuration;
     }
 
-    public function aroundProcess(\Magento\InventoryConfigurableProduct\Pricing\Price\LowestPriceOptionsProvider\StockStatusBaseSelectProcessor $subject, callable $proceed, \Magento\Framework\DB\Select $select)
-    {
+    public function aroundProcess(
+        \Magento\InventoryConfigurableProduct\Pricing\Price\LowestPriceOptionsProvider\StockStatusBaseSelectProcessor $subject,
+        callable $proceed,
+        \Magento\Framework\DB\Select $select
+    ) {
         if ($this->configuration->isModuleEnabled()) {
             return $select;
         }
