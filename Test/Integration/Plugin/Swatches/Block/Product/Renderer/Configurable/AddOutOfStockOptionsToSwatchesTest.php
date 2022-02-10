@@ -128,7 +128,7 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
     protected function getOption(array $optionsData, string $label): array
     {
         foreach ($optionsData as $option) {
-            if ($option['label'] == $label) {
+            if (isset($option['label']) && $option['label'] == $label) {
                 return $option;
             }
         }
