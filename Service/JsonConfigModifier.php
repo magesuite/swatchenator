@@ -46,8 +46,8 @@ class JsonConfigModifier
 
         $jsonConfig = json_decode($jsonConfig, true);
 
-        if (!isset($jsonConfig['attributes']) || empty($jsonConfig['attributes'])) {
-            return $jsonConfig;
+        if (empty($jsonConfig['attributes'])) {
+            return json_encode($jsonConfig);
         }
 
         foreach ($jsonConfig['attributes'] as $attributeId => $attributeData) {
