@@ -158,6 +158,9 @@ class JsonConfigModifier
     {
         foreach ($optionsToUpdate as $id) {
             $attributeValue = $attribute->getSource()->getOptionText($id);
+            if (!isset($swatchesData[$id])) {
+                continue;
+            }
             $attributeOptions[$id] = [
                 'type' => $swatchesData[$id]['type'],
                 'value' => $swatchesData[$id]['value'],
