@@ -15,4 +15,8 @@
     <type name="Magento\InventoryConfigurableProduct\Pricing\Price\LowestPriceOptionsProvider\StockStatusBaseSelectProcessor">
         <plugin name="do_not_add_salable_filter_to_configurable_pricing" type="MageSuite\Swatchenator\Plugin\InventoryConfigurableProduct\Pricing\Price\LowestPriceOptionsProvider\StockStatusBaseSelectProcessor\DoNotAddSalableFilterToConfigurable" sortOrder="10" />
     </type>
+
+    <type name="Magento\Catalog\Model\Product">
+        <plugin name="add_has_all_children_salable_flag" type="\MageSuite\Swatchenator\Plugin\Catalog\Model\Product\AddHasAllChildrenSalableFlag" sortOrder="10" />
+    </type>
 </config>
