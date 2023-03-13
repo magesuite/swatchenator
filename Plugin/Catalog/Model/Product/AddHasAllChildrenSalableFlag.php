@@ -5,21 +5,12 @@ namespace MageSuite\Swatchenator\Plugin\Catalog\Model\Product;
 class AddHasAllChildrenSalableFlag
 {
     /**
-     * @var \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable\Product\CollectionFactory
+     * @var \MageSuite\Swatchenator\Service\JsonConfigModifier
      */
-    protected \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable\Product\CollectionFactory $productCollectionFactory;
+    protected \MageSuite\Swatchenator\Service\JsonConfigModifier $jsonConfigModifier;
 
-    /**
-     * @var \Magento\ConfigurableProduct\Model\Product\Type\Collection\SalableProcessor
-     */
-    protected $salableProcessor;
-
-    public function __construct(
-        \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable\Product\CollectionFactory $productCollectionFactory,
-        \Magento\ConfigurableProduct\Model\Product\Type\Collection\SalableProcessor $salableProcessor
-    ) {
-        $this->salableProcessor = $salableProcessor;
-        $this->productCollectionFactory = $productCollectionFactory;
+    public function __construct(\MageSuite\Swatchenator\Service\JsonConfigModifier $jsonConfigModifier) {
+        $this->jsonConfigModifier = $jsonConfigModifier;
     }
 
     public function aroundGetData(\Magento\Catalog\Model\Product $subject, callable $proceed, $key = '', $index = null)
@@ -37,30 +28,15 @@ class AddHasAllChildrenSalableFlag
 
     protected function hasAllChildrenNotSalable($product)
     {
-        $storeId = $this->getStoreFilter($product);
-        $collection = $this->getLinkedProductCollection($product);
-        $collection->addStoreFilter($storeId);
-        $collection = $this->salableProcessor->process($collection);
+        $childProductsCollection = $this->jsonConfigModifier->getAllAttributesProducts($product);
 
-        return $collection->getSize() === 0;
-    }
-
-    protected function getLinkedProductCollection($product)
-    {
-        $collection = $this->productCollectionFactory->create()
-            ->setFlag('product_children', true)
-            ->setProductFilter($product);
-
-        if ($this->getStoreFilter($product) !== null) {
-            $collection->addStoreFilter($this->getStoreFilter($product));
+        /** @var \Magento\Catalog\Model\Product $childProduct */
+        foreach ($childProductsCollection as $childProduct) {
+            if ($childProduct->isSalable()) {
+                return false;
+            }
         }
 
-        return $collection;
-    }
-
-    public function getStoreFilter($product)
-    {
-        $cacheKey = '_cache_instance_store_filter';
-        return $product->getData($cacheKey);
+        return true;
     }
 }

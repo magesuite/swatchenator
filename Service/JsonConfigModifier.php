@@ -24,17 +24,23 @@ class JsonConfigModifier
      * @var \Magento\Swatches\Helper\Media
      */
     protected $swatchMediaHelper;
+    /**
+     * @var \Magento\CatalogInventory\Model\ResourceModel\Stock\StatusFactory
+     */
+    protected $stockStatusFactory;
 
     public function __construct(
         \Magento\ConfigurableProduct\Helper\Data $helper,
         \Magento\Swatches\Helper\Data $swatchHelper,
         \Magento\Catalog\Model\Product\Image\UrlBuilder $imageUrlBuilder,
-        \Magento\Swatches\Helper\Media $swatchMediaHelper
+        \Magento\Swatches\Helper\Media $swatchMediaHelper,
+        \Magento\CatalogInventory\Model\ResourceModel\Stock\StatusFactory $stockStatusFactory
     ) {
         $this->helper = $helper;
         $this->swatchHelper = $swatchHelper;
         $this->imageUrlBuilder = $imageUrlBuilder;
         $this->swatchMediaHelper = $swatchMediaHelper;
+        $this->stockStatusFactory = $stockStatusFactory;
     }
 
     public function addOutOfStockProductsToJsonConfig($product, $jsonConfig)
@@ -108,6 +114,9 @@ class JsonConfigModifier
                 ->addFilterByRequiredOptions()
                 ->addAttributeToFilter(\Magento\Catalog\Api\Data\ProductInterface::STATUS, ['eq' => \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED])
                 ->setStoreId($product->getStoreId());
+
+            $stockStatusResource = $this->stockStatusFactory->create();
+            $stockStatusResource->addStockDataToCollection($collection, false);
 
             $collection->addMediaGalleryData();
             $collection->addTierPriceData();
