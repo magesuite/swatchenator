@@ -50,6 +50,10 @@ class JsonConfigModifier
         $simpleProductsCollection = $this->getAllAttributesProducts($product);
         $allAttributesOptions = $this->getAllAttributesOptions($product, $simpleProductsCollection);
 
+        if (empty($allAttributesOptions)) {
+            return $jsonConfig;
+        }
+
         $jsonConfig = json_decode($jsonConfig, true);
 
         if (empty($jsonConfig['attributes'])) {
