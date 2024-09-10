@@ -10,11 +10,6 @@ class AddHasAllChildrenSalableFlagTest extends \PHPUnit\Framework\TestCase
     protected $objectManager;
 
     /**
-     * @var \Magento\Swatches\Block\Product\Renderer\Configurable
-     */
-    protected $swatchRenderer;
-
-    /**
      * @var \Magento\Catalog\Api\ProductRepositoryInterface
      */
     protected $productRepository;
@@ -62,7 +57,7 @@ class AddHasAllChildrenSalableFlagTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
      * @magentoDataFixture Magento/ConfigurableProduct/_files/product_configurable.php
-     * @magentoDataFixture setOutOfStockConfigurableChildren
+     * @magentoDataFixture MageSuite_Swatchenator::Test/_files/set_out_of_stock_configurable_children.php
      */
     public function testItReturnCorrectFlagForConfigurableProductAfterUpdateSimple()
     {
@@ -71,14 +66,5 @@ class AddHasAllChildrenSalableFlagTest extends \PHPUnit\Framework\TestCase
         $hasAllChildrenNotSalable = $product->getHasAllChildrenNotSalable();
 
         $this->assertTrue($hasAllChildrenNotSalable);
-    }
-
-    public static function setOutOfStockConfigurableChildren()
-    {
-        require __DIR__ . '/../../../../../_files/set_out_of_stock_configurable_children.php';
-
-        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
-        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
     }
 }

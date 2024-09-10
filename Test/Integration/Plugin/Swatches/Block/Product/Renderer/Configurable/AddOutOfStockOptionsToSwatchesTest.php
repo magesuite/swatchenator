@@ -33,7 +33,7 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
      * @magentoDataFixture Magento/ConfigurableProduct/_files/product_configurable.php
-     * @magentoDataFixture modifySimpleProductStockAvailability
+     * @magentoDataFixture MageSuite_Swatchenator::Test/_files/modify_product_stock_availability.php
      */
     public function testItAddOutOfStockOptionsToSwatchesConfig()
     {
@@ -56,7 +56,7 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
      * @magentoDataFixture Magento/ConfigurableProduct/_files/product_configurable.php
      * @magentoDataFixture modifyAttributeOptionSortOrder
-     * @magentoDataFixture modifySimpleProductStockAvailability
+     * @magentoDataFixture MageSuite_Swatchenator::Test/_files/modify_product_stock_availability.php
      */
     public function testSwatchesOrderIsCorrect()
     {
@@ -78,7 +78,7 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
      * @magentoDataFixture Magento/ConfigurableProduct/_files/product_configurable.php
-     * @magentoDataFixture disableOneSimpleProduct
+     * @magentoDataFixture MageSuite_Swatchenator::Test/_files/disable_one_simple_product.php
      */
     public function testItNotIncludeDisabledProduct()
     {
@@ -141,22 +141,9 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public static function modifySimpleProductStockAvailability()
-    {
-        require __DIR__ . '/../../../../../../../_files/modify_product_stock_availability.php';
-
-        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
-        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
-    }
-
     public static function disableOneSimpleProduct()
     {
         require __DIR__ . '/../../../../../../../_files/disable_one_simple_product.php';
-
-        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
-        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
     }
 
     public static function modifyAttributeOptionSortOrder()
@@ -172,10 +159,6 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
     public static function addConfigurableProductWithSwatchOptions()
     {
         require __DIR__ . '/../../../../../../../_files/configurable_products.php';
-
-        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
-        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
     }
 
     public static function addVisualSwatchAttributeWithDifferentOptionsType()
