@@ -83,8 +83,13 @@ class JsonConfigModifier
 
         $simpleProductsCollection = $this->getAllAttributesProducts($product);
         $allAttributesOptions = $this->getAllAttributesOptions($product, $simpleProductsCollection);
-        $swatchesData = $this->swatchHelper->getSwatchesByOptionsId($allAttributesOptions);
+        $optionIds = [];
 
+        foreach ($allAttributesOptions as $attributeId => $options) {
+            $optionIds = array_merge($optionIds, array_keys($options));
+        }
+
+        $swatchesData = $this->swatchHelper->getSwatchesByOptionsId($optionIds);
         $jsonSwatchesConfig = json_decode($jsonSwatchesConfig, true);
 
         $optionsToUpdate = [];
