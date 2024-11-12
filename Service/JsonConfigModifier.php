@@ -29,18 +29,22 @@ class JsonConfigModifier
      */
     protected $stockStatusFactory;
 
+    protected \Magento\CatalogInventory\Api\StockConfigurationInterface $stockConfiguration;
+
     public function __construct(
         \Magento\ConfigurableProduct\Helper\Data $helper,
         \Magento\Swatches\Helper\Data $swatchHelper,
         \Magento\Catalog\Model\Product\Image\UrlBuilder $imageUrlBuilder,
         \Magento\Swatches\Helper\Media $swatchMediaHelper,
-        \Magento\CatalogInventory\Model\ResourceModel\Stock\StatusFactory $stockStatusFactory
+        \Magento\CatalogInventory\Model\ResourceModel\Stock\StatusFactory $stockStatusFactory,
+        \Magento\CatalogInventory\Api\StockConfigurationInterface $stockConfiguration
     ) {
         $this->helper = $helper;
         $this->swatchHelper = $swatchHelper;
         $this->imageUrlBuilder = $imageUrlBuilder;
         $this->swatchMediaHelper = $swatchMediaHelper;
         $this->stockStatusFactory = $stockStatusFactory;
+        $this->stockConfiguration = $stockConfiguration;
     }
 
     public function addOutOfStockProductsToJsonConfig($product, $jsonConfig)
@@ -114,6 +118,10 @@ class JsonConfigModifier
 
     public function getAllAttributesProducts($product)
     {
+        if ($this->stockConfiguration->isShowOutOfStock()) {
+            return $product->getTypeInstance()->getUsedProducts($product);
+        }
+
         if ($this->shouldSimpleProductCollectionBeReloaded($product)) {
             $collection = $product->getTypeInstance()->getUsedProductCollection($product);
 
