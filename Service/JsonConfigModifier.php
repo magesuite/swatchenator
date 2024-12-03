@@ -119,7 +119,10 @@ class JsonConfigModifier
     public function getAllAttributesProducts($product)
     {
         if ($this->stockConfiguration->isShowOutOfStock()) {
-            return $product->getTypeInstance()->getUsedProducts($product);
+            return array_filter(
+                $product->getTypeInstance()->getUsedProducts($product),
+                fn($variant) => $variant->getStatus()
+            );
         }
 
         if ($this->shouldSimpleProductCollectionBeReloaded($product)) {
