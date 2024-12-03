@@ -119,7 +119,10 @@ class JsonConfigModifier
     public function getAllAttributesProducts($product)
     {
         if ($this->stockConfiguration->isShowOutOfStock()) {
-            return $product->getTypeInstance()->getUsedProducts($product);
+            return array_filter(
+                $product->getTypeInstance()->getUsedProducts($product),
+                fn($variant) => $variant->getStatus() === \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED
+            );
         }
 
         if ($this->shouldSimpleProductCollectionBeReloaded($product)) {
