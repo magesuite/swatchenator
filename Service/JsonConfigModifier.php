@@ -121,7 +121,7 @@ class JsonConfigModifier
         if ($this->stockConfiguration->isShowOutOfStock()) {
             return array_filter(
                 $product->getTypeInstance()->getUsedProducts($product),
-                fn($variant) => $variant->getStatus()
+                fn($variant) => $variant->getStatus() === \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED
             );
         }
 
