@@ -1,53 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\Swatchenator\Service;
 
 class JsonConfigModifier
 {
-    protected $configurableProduct = null;
+    protected $configurableProduct = null; // @codingStandardsIgnoreLine
 
-    protected $simpleProductsCollection = null;
+    protected $simpleProductsCollection = null; // @codingStandardsIgnoreLine
 
-    /**
-     * @var \Magento\ConfigurableProduct\Helper\Data
-     */
-    protected $helper;
-    /**
-     * @var \Magento\Swatches\Helper\Data
-     */
-    protected $swatchHelper;
-    /**
-     * @var \Magento\Catalog\Model\Product\Image\UrlBuilder
-     */
-    protected $imageUrlBuilder;
-    /**
-     * @var \Magento\Swatches\Helper\Media
-     */
-    protected $swatchMediaHelper;
-    /**
-     * @var \Magento\CatalogInventory\Model\ResourceModel\Stock\StatusFactory
-     */
-    protected $stockStatusFactory;
-
-    protected \Magento\CatalogInventory\Api\StockConfigurationInterface $stockConfiguration;
+    protected bool $fetchOnlySpecificOptions = false;
 
     public function __construct(
-        \Magento\ConfigurableProduct\Helper\Data $helper,
-        \Magento\Swatches\Helper\Data $swatchHelper,
-        \Magento\Catalog\Model\Product\Image\UrlBuilder $imageUrlBuilder,
-        \Magento\Swatches\Helper\Media $swatchMediaHelper,
-        \Magento\CatalogInventory\Model\ResourceModel\Stock\StatusFactory $stockStatusFactory,
-        \Magento\CatalogInventory\Api\StockConfigurationInterface $stockConfiguration
+        protected \Magento\ConfigurableProduct\Helper\Data $helper,
+        protected \Magento\Swatches\Helper\Data $swatchHelper,
+        protected \Magento\Catalog\Model\Product\Image\UrlBuilder $imageUrlBuilder,
+        protected \Magento\Swatches\Helper\Media $swatchMediaHelper,
+        protected \Magento\CatalogInventory\Model\ResourceModel\Stock\StatusFactory $stockStatusFactory,
+        protected \Magento\CatalogInventory\Api\StockConfigurationInterface $stockConfiguration
     ) {
-        $this->helper = $helper;
-        $this->swatchHelper = $swatchHelper;
-        $this->imageUrlBuilder = $imageUrlBuilder;
-        $this->swatchMediaHelper = $swatchMediaHelper;
-        $this->stockStatusFactory = $stockStatusFactory;
-        $this->stockConfiguration = $stockConfiguration;
     }
 
-    public function addOutOfStockProductsToJsonConfig($product, $jsonConfig)
+    public function addOutOfStockProductsToJsonConfig($product, $jsonConfig) // @codingStandardsIgnoreLine
     {
         $productResource = $product->getResource();
 
@@ -65,7 +40,7 @@ class JsonConfigModifier
         }
 
         foreach ($jsonConfig['attributes'] as $attributeId => $attributeData) {
-            $sortOrder = $this->prepareSortOrder($productResource, $attributeId, $allAttributesOptions);
+            $sortOrder = $this->prepareSortOrder($productResource, (int)$attributeId, $allAttributesOptions);
 
             foreach ($attributeData['options'] as $option) {
                 if (isset($allAttributesOptions[$attributeId][$option['id']])) {
@@ -81,7 +56,7 @@ class JsonConfigModifier
         return json_encode($jsonConfig);
     }
 
-    public function addOutOfStockProductsToJsonSwatchesConfig($product, $jsonSwatchesConfig)
+    public function addOutOfStockProductsToJsonSwatchesConfig($product, $jsonSwatchesConfig) // @codingStandardsIgnoreLine
     {
         $productResource = $product->getResource();
 
@@ -116,7 +91,7 @@ class JsonConfigModifier
         return json_encode($jsonSwatchesConfig);
     }
 
-    public function getAllAttributesProducts($product)
+    public function getAllAttributesProducts($product) // @codingStandardsIgnoreLine
     {
         if ($this->stockConfiguration->isShowOutOfStock()) {
             return array_filter(
@@ -148,7 +123,7 @@ class JsonConfigModifier
         return $this->simpleProductsCollection;
     }
 
-    public function getAllAttributesOptions($product, $simpleProductsCollection)
+    public function getAllAttributesOptions($product, $simpleProductsCollection) // @codingStandardsIgnoreLine
     {
         $options = [];
         $allowAttributes = $this->helper->getAllowAttributes($product);
@@ -208,9 +183,9 @@ class JsonConfigModifier
         return $attributeOptions;
     }
 
-    public function prepareSortOrder(\Magento\Catalog\Model\ResourceModel\Product $productResource, $attributeId, $allAttributesOptions)
+    public function prepareSortOrder(\Magento\Catalog\Model\ResourceModel\Product $productResource, int $attributeId, array $allAttributesOptions): array
     {
-        $resourceAttributeOptions = $productResource->getAttribute($attributeId)->getOptions();
+        $resourceAttributeOptions = $this->getAttributeOptions($productResource, $attributeId, $allAttributesOptions);
         $attributeOptions = $allAttributesOptions[$attributeId] ?? [];
         $filteredOptions = array_map($this->getOptionValue($attributeOptions), $resourceAttributeOptions);
 
@@ -231,7 +206,7 @@ class JsonConfigModifier
         return $swatch;
     }
 
-    public function getVariationMedia($product, $attributeCode, $optionId)
+    public function getVariationMedia($product, $attributeCode, $optionId) // @codingStandardsIgnoreLine
     {
         $variationProduct = $this->getVariationProduct($product, $attributeCode, $optionId);
 
@@ -246,7 +221,7 @@ class JsonConfigModifier
         return $variationMediaArray;
     }
 
-    public function getVariationProduct($product, $attributeCode, $optionId)
+    public function getVariationProduct($product, $attributeCode, $optionId) // @codingStandardsIgnoreLine
     {
         $simpleProductCollection = $this->getAllAttributesProducts($product);
 
@@ -261,8 +236,10 @@ class JsonConfigModifier
         return $variationProduct;
     }
 
-    public function extractNecessarySwatchData(array $swatchDataArray)
+    public function extractNecessarySwatchData(array $swatchDataArray): array
     {
+        $result = [];
+
         $result['type'] = $swatchDataArray['type'];
 
         if ($result['type'] == \Magento\Swatches\Model\Swatch::SWATCH_TYPE_VISUAL_IMAGE && !empty($swatchDataArray['value'])) {
@@ -281,7 +258,7 @@ class JsonConfigModifier
         return $result;
     }
 
-    public function getSwatchProductImage(\Magento\Catalog\Model\Product $childProduct, $imageType)
+    public function getSwatchProductImage(\Magento\Catalog\Model\Product $childProduct, $imageType) // @codingStandardsIgnoreLine
     {
         if ($this->productHasImage($childProduct, \Magento\Swatches\Model\Swatch::SWATCH_IMAGE_NAME)) {
             $swatchImageId = $imageType;
@@ -296,12 +273,12 @@ class JsonConfigModifier
         }
     }
 
-    public function productHasImage(\Magento\Catalog\Model\Product $product, $imageType)
+    public function productHasImage(\Magento\Catalog\Model\Product $product, $imageType): bool // @codingStandardsIgnoreLine
     {
         return $product->getData($imageType) !== null && $product->getData($imageType) != \Magento\Swatches\Helper\Data::EMPTY_IMAGE_VALUE;
     }
 
-    protected function shouldSimpleProductCollectionBeReloaded(\Magento\Catalog\Model\Product $product)
+    protected function shouldSimpleProductCollectionBeReloaded(\Magento\Catalog\Model\Product $product): bool
     {
         if (!$this->simpleProductsCollection || !$this->configurableProduct) {
             return true;
@@ -314,25 +291,52 @@ class JsonConfigModifier
         return false;
     }
 
-    /**
-     * @param $sortOrder
-     * @return \Closure
-     */
-    protected function uaSort($sortOrder): \Closure
+    protected function uaSort(array $sortOrder): \Closure
     {
         return function ($leftItem, $rightItem) use ($sortOrder) { // @codingStandardsIgnoreLine
             return array_search((int)$leftItem['id'], $sortOrder) <=> array_search((int)$rightItem['id'], $sortOrder);
         };
     }
 
-    /**
-     * @param $attributeOptions
-     * @return \Closure
-     */
-    protected function getOptionValue($attributeOptions): \Closure
+    protected function getOptionValue(array $attributeOptions): \Closure
     {
         return function ($option) use ($attributeOptions) { // @codingStandardsIgnoreLine
-            return isset($attributeOptions[$option->getValue()]) ? (int)$option->getValue() : false;
+            $value = is_array($option) ? $option['value'] : $option->getValue();
+            return isset($attributeOptions[$value]) ? (int)$value : false;
         };
+    }
+
+    protected function getAttributeOptions(
+        \Magento\Catalog\Model\ResourceModel\Product $productResource,
+        int $attributeId,
+        array $allAttributesOptions
+    ): array {
+        if (!$this->getFetchOnlySpecificOptionsFlag()) {
+            //fetch all options
+            return $productResource->getAttribute($attributeId)->getOptions();
+        }
+
+        try {
+            //fetch only specific options if available
+            $attribute = $productResource->getAttribute($attributeId);
+            $resourceAttributeOptions = $attribute->getSource()->getSpecificOptions(
+                array_keys($allAttributesOptions[$attributeId]),
+                false
+            );
+        } catch (\Exception $e) {
+            $resourceAttributeOptions = $productResource->getAttribute($attributeId)->getOptions();
+        }
+
+        return $resourceAttributeOptions;
+    }
+
+    public function setFetchOnlySpecificOptionsFlag(bool $value): void
+    {
+        $this->fetchOnlySpecificOptions = $value;
+    }
+
+    public function getFetchOnlySpecificOptionsFlag(): bool
+    {
+        return $this->fetchOnlySpecificOptions;
     }
 }
