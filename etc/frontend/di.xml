@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
+        <plugin name="hide_stock_status_for_configurable" type="MageSuite\Swatchenator\Plugin\ConfigurableProduct\Block\Product\View\Type\Configurable\HideStockStatusForConfigurable" sortOrder="100"/>
+    </type>
+</config>

@@ -10,10 +10,18 @@
             <resource>MageSuite_Swatchenator::configuration</resource>
             <group id="general" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General</label>
-                <field id="is_enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Display Out of Stock Swatches</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[When enabled, out of stock configurable product options will be always visible.]]></comment>
+                </field>
+                <field id="hide_configurable_stock_status" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Hide Configurable Stock Status</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>When enabled, it hides stock status availabiltiy of configurable product from PDP.</comment>
+                    <depends>
+                        <field id="is_enabled">1</field>
+                    </depends>
                 </field>
             </group>
         </section>
