@@ -23,6 +23,11 @@
                         <field id="is_enabled">1</field>
                     </depends>
                 </field>
+                <field id="fetch_specific" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Optimize Attributes Options fetch (fetch only specific)</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Optimize options fetch (ex. when attribute has thousands of options).]]></comment>
+                </field>
             </group>
         </section>
     </system>

@@ -1,25 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\Swatchenator\Plugin\Swatches\Block\Product\Renderer\Configurable;
 
 class AddOutOfStockOptionsToSwatches
 {
-    /**
-     * @var \MageSuite\Swatchenator\Helper\Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var \MageSuite\Swatchenator\Service\JsonConfigModifier
-     */
-    protected $jsonConfigModifier;
-
     public function __construct(
-        \MageSuite\Swatchenator\Helper\Configuration $configuration,
-        \MageSuite\Swatchenator\Service\JsonConfigModifier $jsonConfigModifier
+        protected \MageSuite\Swatchenator\Helper\Configuration $configuration,
+        protected \MageSuite\Swatchenator\Service\JsonConfigModifier $jsonConfigModifier
     ) {
-        $this->configuration = $configuration;
-        $this->jsonConfigModifier = $jsonConfigModifier;
     }
 
     public function afterGetJsonSwatchConfig(\Magento\Swatches\Block\Product\Renderer\Configurable $subject, $result)
@@ -35,6 +25,10 @@ class AddOutOfStockOptionsToSwatches
     {
         if (!$this->configuration->isModuleEnabled()) {
             return $result;
+        }
+
+        if ($this->configuration->fetchOnlySpecificOptions()) {
+            $this->jsonConfigModifier->setFetchOnlySpecificOptionsFlag(true);
         }
 
         return $this->jsonConfigModifier->addOutOfStockProductsToJsonConfig($subject->getProduct(), $result);

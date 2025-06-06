@@ -5,6 +5,7 @@
             <general>
                 <is_enabled>1</is_enabled>
                 <hide_configurable_stock_status>0</hide_configurable_stock_status>
+                <fetch_specific>0</fetch_specific>
             </general>
         </swatchenator>
     </default>
