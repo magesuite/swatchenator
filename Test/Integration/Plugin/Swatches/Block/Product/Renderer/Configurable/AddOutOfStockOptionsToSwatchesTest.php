@@ -1,23 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\Swatchenator\Test\Integration\Plugin\Swatches\Block\Product\Renderer\Configurable;
 
 class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
+    protected \Magento\Framework\App\ObjectManager $objectManager;
 
-    /**
-     * @var \Magento\Swatches\Block\Product\Renderer\Configurable
-     */
-    protected $swatchRenderer;
+    protected \Magento\Swatches\Block\Product\Renderer\Configurable $swatchRenderer;
 
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
+    protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
 
     public function setUp(): void
     {
@@ -35,7 +28,7 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/ConfigurableProduct/_files/product_configurable.php
      * @magentoDataFixture MageSuite_Swatchenator::Test/_files/modify_product_stock_availability.php
      */
-    public function testItAddOutOfStockOptionsToSwatchesConfig()
+    public function testItAddOutOfStockOptionsToSwatchesConfig(): void
     {
         $product = $this->productRepository->get('configurable');
         $swatchRenderer = $this->swatchRenderer->setProduct($product);
@@ -55,10 +48,10 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
      * @magentoDataFixture Magento/ConfigurableProduct/_files/product_configurable.php
-     * @magentoDataFixture modifyAttributeOptionSortOrder
+     * @magentoDataFixture MageSuite_Swatchenator::Test/_files/modify_attribute_option_sort_order.php
      * @magentoDataFixture MageSuite_Swatchenator::Test/_files/modify_product_stock_availability.php
      */
-    public function testSwatchesOrderIsCorrect()
+    public function testSwatchesOrderIsCorrect(): void
     {
         $product = $this->productRepository->get('configurable');
         $swatchRenderer = $this->swatchRenderer->setProduct($product);
@@ -80,7 +73,7 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/ConfigurableProduct/_files/product_configurable.php
      * @magentoDataFixture MageSuite_Swatchenator::Test/_files/disable_one_simple_product.php
      */
-    public function testItNotIncludeDisabledProduct()
+    public function testItNotIncludeDisabledProduct(): void
     {
         $product = $this->productRepository->get('configurable');
         $swatchRenderer = $this->swatchRenderer->setProduct($product);
@@ -99,11 +92,11 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store swatchenator/general/is_enabled 1
-     * @magentoDataFixture addVisualSwatchAttributeWithDifferentOptionsType
-     * @magentoDataFixture addConfigurableProductWithSwatchOptions
-     * @magentoDataFixture modifySimpleProductStockAvailabilityWithSwatchImage
+     * @magentoDataFixture MageSuite_Swatchenator::Test/_files/visual_swatch_attribute_with_different_options_type.php
+     * @magentoDataFixture MageSuite_Swatchenator::Test/_files/configurable_products.php
+     * @magentoDataFixture MageSuite_Swatchenator::Test/_files/modify_product_stock_availability_with_swatch_image.php
      */
-    public function testItReturnCorrectConfigurationForImageSwatch()
+    public function testItReturnCorrectConfigurationForImageSwatch(): void
     {
         $product = $this->productRepository->get('configurable_12345');
         $swatchRenderer = $this->swatchRenderer->setProduct($product);
@@ -139,35 +132,5 @@ class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
             'thumb' => null,
             'label' => null,
         ];
-    }
-
-    public static function disableOneSimpleProduct()
-    {
-        require __DIR__ . '/../../../../../../../_files/disable_one_simple_product.php';
-    }
-
-    public static function modifyAttributeOptionSortOrder()
-    {
-        require __DIR__ . '/../../../../../../../_files/modify_attribute_option_sort_order.php';
-    }
-
-    public static function modifySimpleProductStockAvailabilityWithSwatchImage()
-    {
-        require __DIR__ . '/../../../../../../../_files/modify_product_stock_availability_with_swatch_image.php';
-    }
-
-    public static function addConfigurableProductWithSwatchOptions()
-    {
-        require __DIR__ . '/../../../../../../../_files/configurable_products.php';
-    }
-
-    public static function addVisualSwatchAttributeWithDifferentOptionsType()
-    {
-        require __DIR__ . '/../../../../../../../_files/visual_swatch_attribute_with_different_options_type.php';
-    }
-
-    public static function addVisualSwatchAttributeWithDifferentOptionsTypeRollback()
-    {
-        require __DIR__ . '/../../../../../../../_files/visual_swatch_attribute_with_different_options_type_rollback.php';
     }
 }
