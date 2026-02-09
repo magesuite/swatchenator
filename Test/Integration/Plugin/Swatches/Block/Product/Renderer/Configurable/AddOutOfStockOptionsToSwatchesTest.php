@@ -6,11 +6,9 @@ namespace MageSuite\Swatchenator\Test\Integration\Plugin\Swatches\Block\Product\
 
 class AddOutOfStockOptionsToSwatchesTest extends \PHPUnit\Framework\TestCase
 {
-    protected \Magento\Framework\App\ObjectManager $objectManager;
-
-    protected \Magento\Swatches\Block\Product\Renderer\Configurable $swatchRenderer;
-
-    protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\Magento\Framework\App\ObjectManager $objectManager;
+    protected ?\Magento\Swatches\Block\Product\Renderer\Configurable $swatchRenderer;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
 
     public function setUp(): void
     {
