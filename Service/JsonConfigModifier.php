@@ -133,7 +133,10 @@ class JsonConfigModifier
             foreach ($allowAttributes as $attribute) {
                 $productAttribute = $attribute->getProductAttribute();
                 $productAttributeId = $productAttribute->getId();
-                $attributeValue = $simpleProduct->getData($productAttribute->getAttributeCode());
+                $attributeValue = (string) $simpleProduct->getData($productAttribute->getAttributeCode());
+                if (!$productAttributeId || $attributeValue === null) {
+                    continue;
+                }
                 $options[$productAttributeId][$attributeValue][] = $productId;
                 $options['index'][$productId][$productAttributeId] = $attributeValue;
             }
