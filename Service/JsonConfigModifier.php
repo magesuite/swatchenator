@@ -64,7 +64,7 @@ class JsonConfigModifier
         $allAttributesOptions = $this->getAllAttributesOptions($product, $simpleProductsCollection);
         $optionIds = [];
 
-        foreach ($allAttributesOptions as $attributeId => $options) {
+        foreach ($allAttributesOptions as $options) {
             $optionIds = array_merge($optionIds, array_keys($options));
         }
 
@@ -134,6 +134,9 @@ class JsonConfigModifier
                 $productAttribute = $attribute->getProductAttribute();
                 $productAttributeId = $productAttribute->getId();
                 $attributeValue = $simpleProduct->getData($productAttribute->getAttributeCode());
+                if (!$productAttributeId || $attributeValue === null) {
+                    continue;
+                }
                 $options[$productAttributeId][$attributeValue][] = $productId;
                 $options['index'][$productId][$productAttributeId] = $attributeValue;
             }
